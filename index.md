@@ -338,8 +338,8 @@ void draw() {
   drawRotatedCube(2, center, 0.15);
 }
 
-void drawRotatedCube(double n, Vec3 center, double angle) {
-  Vec3[] pts = getCubePoints(n);
+void drawRotatedCube(double edge, Vec3 center, double angle) {
+  Vec3[] pts = getCubePoints(edge);
   
   for(Vec3 p : pts) {
     p.rotateX(center, angle);
