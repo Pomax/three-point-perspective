@@ -18,19 +18,19 @@ Before we continue, I want to make it very clear that you will almost **never** 
 
 Let's have a look at the two point perspective, to get a feel for what we're dealing with:
 
-![image-20210603162927284](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210603162927284.png)
+![image-20210603162927284](image-20210603162927284.png)
 
 We have two vanishing points, labeled Z and X here, and some arbitrary "zero" point where we simply say "this is (0,0,0)" (using thee coordinates, because right now there's an implied Y coordinate, but we'll make it explicit soon enough). We also need some point to act as our "zero": when you're drawing on a piece of paper you can just decide where that is, but when working with computers we need to be explicit about where fixed points are. This actually makes "two point perspective" a three point perspective for computers, because you need to specify three points, but that's neither here nor there. We then also need to say what the elevation is from our zero to the horizon, because (again) while you're drawing you can just wing it, but computers need to know what that value is so that arbitrary coordinates can get mapped to the screen correctly. Make "two point perspective" actually "three points and a number" perspective. Let's say that the height at the horizon for our perspective is simply one, then this will give us that following perspective:
 
-![image-20210603175127056](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210603175127056.png)
+![image-20210603175127056](image-20210603175127056.png)
 
 And with that we have everything we need to construct pretty graphics in two point perspective. Except there's one thing that you'll almost certainly have noticed already, but might not have considered: the above "graph" isn't a normal graph. We see the grid getting finer and finer, the closer we get to X, Z, as well as the horizon. Rather than a standard grid, more precisely know as a [Cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system), and specifically [Euclidean](https://en.wikipedia.org/wiki/Euclidean_space), coordinate system like this:
 
-![image-20210603163818568](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210603163818568.png)
+![image-20210603163818568](image-20210603163818568.png)
 
 We have something that's more like this:
 
-![image-20210604174011025](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604174011025.png)
+![image-20210604174011025](image-20210604174011025.png)
 
 That is, rather than an infinite grid that we could never fit on any kind of finite size piece of paper, we have a bounded grid, where the distance between a [world coordinate](https://www.cs.uic.edu/~jbell/CourseNotes/ComputerGraphics/Coordinates.html) at zero and at infinity is an _fixed distance_ in terms of [screen coordinates](https://www.cs.uic.edu/~jbell/CourseNotes/ComputerGraphics/Coordinates.html). As long as we understand the difference between world and screen coordinates: the screen coordinates are like a camera, it's what we "see" given the projection we've told the camera to use, whereas the world coordinates are "the actual things themselves". Even though our projection can turn an infinity into a fixed point, as far as the world coordinate system is concerned, there's still no way for something to ever actually _be_ at infinity, let alone be _beyond_ infinity, even though our projection lets us put the mouse cursor exactly on, or even beyond, where infinity gets projected onto the screen.
 
@@ -38,7 +38,7 @@ This is an example of a Cartesian, but **non-Euclidean**, coordinate system. Tha
 
 However, the above illustration only exists to get us comfortable with the idea of mapping infinity, by looking at an illustration of mapping an infinite range to a fixed size. The actual projection we're dealing in two point perspective is more complex than the one shown above still:
 
-![image-20210603165407601](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210603165407601.png)
+![image-20210603165407601](image-20210603165407601.png)
 
 Not only is our grid not linear, it is not even Cartesian: while it might look like this triangle is the same as the above rectangular grid, but with the upper right corner moved inward so it forms a diagonal with the other two points, that's not actually the case. If you look at the upper left and lower right points, you'll see that our grid lines all converge. Using the labeling **Z** and **X** for the two points, you can see that all values x=..., z=∞ lie on the same point, **Z**, which would not be the case if all we did was move our corner point in. If that had been the case, all those values would lie somewhere between **Z** and the midpoint of the diagonal (with a similar case for **X**) and our grid lines would not converge to single points. Instead, the _entire diagonal line_ represents the "point" (∞,∞). Even though in reality nothing can ever get there, once a point reaches infinity in either X, Z, or both dimensions, it would become spread out over the entire diagonal, whereas the lines (n,∞) and (∞,n) become the _points_ **Z** and **X**.
 
@@ -72,7 +72,7 @@ double distanceToRatio(double s) {
 
 We can now define a function that turns a 3D world coordinate (with y=0 for now) into a 2D screen coordinate, by doing what you'd do on paper as well: find the coordinate's distance along the X axis,  do the same for the Z axis, and then our coordinate can be drawn as the intersection of the line from Z to the point on the X axis, and from X to the point on the Z axis. For example, drawing x=0.5, z=1 gives:
 
-![image-20210604085352991](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604085352991.png)
+![image-20210604085352991](image-20210604085352991.png)
 
 With the coordinate mapping function looking like:
 
@@ -132,7 +132,7 @@ void vertex(double x, double z) {
 
 This now gives us the following graphic:
 
-![image-20210603172921646](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210603172921646.png)
+![image-20210603172921646](image-20210603172921646.png)
 
 Of course, the whole point of two and three point perspective, is to draw _perspectives_ rather than flat projections, so so let's extend our `get()` function so that it takes elevation into account. This requires a few values specified/computed up front as part of specifying our vanishing points, so we can use them in our elevation-updated `get()` function:
 
@@ -201,7 +201,7 @@ void drawSomeGeometry() {
 
 Giving us the following 3D perspective "drawing":
 
-![image-20210604105357855](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604105357855.png)
+![image-20210604105357855](image-20210604105357855.png)
 
 Looking pretty good! But that's only two point perspective. Three point perspective ups the non-Euclidean-ness by also making the elevation a "fixed distance to infinity" axis. If you made it this far: things are about to get _really_ weird!
 
@@ -209,13 +209,13 @@ Looking pretty good! But that's only two point perspective. Three point perspect
 
 Making our elevation an exponential dimension gives us this delightful little world space:
 
-![image-20210604155438583](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604155438583.png)
+![image-20210604155438583](image-20210604155438583.png)
 
 We now have three vanishing points that can never be reached (except by pixel rounding) and where in two point perspective at least we have parallel lines for our verticals, that's gone: all verticals now converges at Y. So, let's write a `get3()` function for computing screen coordinates using three point perspective.
 
 First off, let's sketch out how to get our 3D point in this kind of space:
 
-![image-20210604163158179](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604163158179.png)
+![image-20210604163158179](image-20210604163158179.png)
 
 We're basically doing the same thing we did for the two point perspective, twice: we construct the point XY from its X and Y axis coordinate, and then we do the same for point YZ, and then we find the intersection between the line XY--Z and line X--YZ. And that's it, we're done. In code:
 
@@ -237,7 +237,7 @@ Vec2 get3(double x, double y, double z) {
 
 So, what does this look like for the 1x7x2 beam we drew earlier, using two point perspective?
 
-![image-20210604160406689](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604160406689.png)
+![image-20210604160406689](image-20210604160406689.png)
 
 That's not great... it's correct, but it's also pretty horrible... The reason for this is that by using exponential decay with base 2 we approach Y _really_ quickly. However, we can control this by changing the value we use as exponential base. 
 
@@ -247,7 +247,7 @@ double yBase = 1.25;double stepToDistanceRatio(double step) {  return stepToDist
 
 This makes things look a little better:
 
-![image-20210604163834688](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604163834688.png)
+![image-20210604163834688](image-20210604163834688.png)
 
 But that's it, we've successfully implemented strict three point perspective!
 
@@ -265,7 +265,7 @@ void drawCurveIllustration() {  for(double i=0; i<20; i+=1.0/3.0) {    circle(ge
 
 We'd expect this to be a straight line, possibly pointing in an unexpected direction, but...
 
-![image-20210604164835460](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604164835460.png)
+![image-20210604164835460](image-20210604164835460.png)
 
 ...actually, we don't get lines _at all_ most of the time. Instead, all these points that lie on a straight line in terms of world coordinates end up on curves in exponential space. Which means that when we're working with strict two or three point perspective, we can't draw edges between points using a standard `line` primitive. We'll need a curve primitive instead.
 
@@ -283,17 +283,17 @@ void drawCurveIllustration() {  curve(new Vec3(0,0,0), new Vec3(20, 5,0)); // y 
 
 This shows us the following curves:
 
-![image-20210604171151334](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604171151334.png)
+![image-20210604171151334](image-20210604171151334.png)
 
 We can now see just exactly how non-Euclidean this exponential space is: functions that are divergent straight lines in Euclidean space become _convergent curves_ (converging at our vanishing points), with the exception of axis-aligned and perpendicular-to-axes lines, which retain their straight line behaviour.
 
 Which means that even a simple cube is going to look "nothing like a cube" most of the time. Certainly, if we set up a simple cube with edge length 2 using axis-aligned coordinates, it'll look like nothing's different with respect to standard 3D projections:
 
-![image-20210604172040555](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604172040555.png)
+![image-20210604172040555](image-20210604172040555.png)
 
 But if we rotate that same cube just little over the three axes... well... things get very fun, very fast indeed!
 
-![image-20210604172348263](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604172348263.png)
+![image-20210604172348263](image-20210604172348263.png)
 
 And remember: in world coordinates, none of these edges are actually curved, they're all straight lines with perfectly straight angles between them. Exponential space just completely ignores that.
 
