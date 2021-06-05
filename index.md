@@ -55,15 +55,13 @@ So, let's implement two point perspective, given our four points **Z**, **X**, a
 First, let's define our transform to turn a linear value into an exponential ratio. We want something that, given value of x=1 for example, yields the value "0.5" signifying that x=1 can be found midway on the X axis, x=2 yielding "0.75" (i.e. three quarters the distance from (0,0,0) along the X axis), and so forth.
 
 You may have spotted the pattern, where we're just moving by halving the remaining interval for each whole step **s** we're taking, so that's just exponential decay:
-$$
-f(s) = \left ( \frac{1}{2} \right )^s = \frac{1}{2^s}
-$$
+
+![{E6F60D04-8E90-4DCC-B2E8-166A04D42BB3}]({E6F60D04-8E90-4DCC-B2E8-166A04D42BB3}.png)
 
 When s=0, this gives us f(s)=1, and if s=∞ (ignoring that practically speaking this is impossible of course), we get f(s)=0. That's somewhat the opposite of what we actually want, namely have f(0) be 0 and f(∞) be 1, so we can force that:
 
-$$
-f(s) = 1 - \frac{1}{2^s}
-$$
+![{87566E73-CC17-45C0-9D34-4E7B3DB63C64}]({87566E73-CC17-45C0-9D34-4E7B3DB63C64}.png)
+
 Now s=0 gives us f(s)=0, and s=∞ gives us f(s)=1. Perfect. And of course implementing this is essentially trivial:
 
 ```java
