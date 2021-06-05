@@ -274,7 +274,7 @@ But that's it, we've successfully implemented strict three point perspective!
 
 ...
 
-Hahaha, no we haven't, we've actually been looking at an incredibly lucky edge case so far, where we've effectively been getting lucky with our choice of coordinates, giving us nice, clean, straight lines to work with. That's not actually exponential space works for the vast majority of lines between points, so let's discover what shapes _actually_ look like most of the time.
+Hahaha, no we haven't, we've actually been looking at an incredibly lucky edge case so far, where we've effectively been getting lucky with our choice of coordinates, giving us nice, clean, straight lines to work with. That's not actually how exponential space works for the vast majority of lines between points, so let's discover what shapes _actually_ look like most of the time.
 
 ## There are (almost) no straight lines in exponential space
 
