@@ -244,7 +244,28 @@ So, what does this look like for the 1x7x2 beam we drew earlier, using two point
 That's not great... it's correct, but it's also pretty horrible... The reason for this is that by using exponential decay with base 2 we approach Y _really_ quickly. However, we can control this by changing the value we use as exponential base. 
 
 ```java
-double yBase = 1.25;double stepToDistanceRatio(double step) {  return stepToDistanceRatio(2.0, step);}double stepToDistanceRatio(double base, double step) {  return 1.0 - 1.0 / pow(base, step);}Vec2 get3(double x, double y, double z) {  if (x==0 && y==0 && z==0) return C;      Vec2 px = lerp(C, X, stepToDistanceRatio(x));  Vec2 pz = lerp(C, Z, stepToDistanceRatio(z));  if (y==0) return lli(X, pz, Z, px);  Vec2 py = lerp(C, Y, stepToDistanceRatio(yBase, y));  Vec2 YZ = lli(Y, pz, Z, py);  Vec2 XY = lli(Y, px, X, py);  return lli(XY, Z, X, YZ);}
+double yBase = 1.25;
+
+double stepToDistanceRatio(double step) {
+  return stepToDistanceRatio(2.0, step);
+}
+
+double stepToDistanceRatio(double base, double step) {
+  return 1.0 - 1.0 / pow(base, step);
+}
+
+Vec2 get3(double x, double y, double z) {
+  if (x==0 && y==0 && z==0) return C;
+
+  Vec2 px = lerp(C, X, stepToDistanceRatio(x));
+  Vec2 pz = lerp(C, Z, stepToDistanceRatio(z));
+  if (y==0) return lli(X, pz, Z, px);
+  
+  Vec2 py = lerp(C, Y, stepToDistanceRatio(yBase, y));
+  Vec2 YZ = lli(Y, pz, Z, py);
+  Vec2 XY = lli(Y, px, X, py);
+  return lli(XY, Z, X, YZ);
+}
 ```
 
 This makes things look a little better:
@@ -320,3 +341,4 @@ And remember: in world coordinates, none of these edges are actually curved, the
 # Concluding remarks
 
 It should be pretty obvious by now that strict three point perspective is _incredibly_ niche. The odds that you're going to use this for anything, at any point in the future, are basically zero. But it does teach us some interesting things, and maybe those are good inspiration for a future project you don't know you'll be working on yet!
+
