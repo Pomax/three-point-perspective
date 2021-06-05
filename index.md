@@ -14,8 +14,6 @@ Before we continue, I want to make it very clear that you will almost **never** 
 
 ## Working in exponential space
 
-
-
 Let's have a look at the two point perspective, to get a feel for what we're dealing with:
 
 ![image-20210603162927284](image-20210603162927284.png)
@@ -360,5 +358,14 @@ And remember: in world coordinates, none of these edges are actually curved, the
 # Concluding remarks
 
 It should be pretty obvious by now that strict three point perspective is _incredibly_ niche. The odds that you're going to use this for anything, at any point in the future, are basically zero. But it does teach us some interesting things, and maybe those are good inspiration for a future project you don't know you'll be working on yet!
+
+## Also, a note on what this article is not
+
+There seems to be some [pretty grave misconceptions around what this article is](https://news.ycombinator.com/item?id=27407691): this is very expressly **not** a tutorial on how to implement three point perspective projection. This is an analysis of the maths involved, and what that math tells us about the space we're working with. This article **absolutely does not** say you should use this for any real world application. In fact, you should _never_ use the code outlined here, because it makes no sense to: we're repeating, in code, the steps you'd take on paper. That's an absolutely _horrible_ way to implement a 3D render system, don't do that. But if you never stopped to wonder where the limits of two or three point perspectives are: this article is for you.
+
+What people tend to forget is that when we draw two and three point perspective with pen and paper, we never use the full space, we only use a _tiny_ part, with the paper taped down, and vanishing points that aren't even _on_ the paper, so that our paper represents a small section of exponential space close to the origin, where the whole "exponential" nature just barely reveals itself. It gives us great looking drawings, as long as we don't get too close to those vanishing points. Hell, we even add _more sets of vanishing points_ and blend between them, just so our perspective stays close enough to the origin.
+
+That's the exact opposite of what we're doing in this article: we've explicitly set out to find out what happens if we use _the entire space available to us_. It's fun, and interesting, and we see some weird shit, and at the same time, if you're paying attention, you'll realize full well that this should _never_ be how you implement perspective projection.
+
 
 — [Pomax](https://twitter.com/TheRealPoamx)
