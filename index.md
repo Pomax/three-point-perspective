@@ -12,6 +12,8 @@ Realistically? You don't.
 
 Before we continue, I want to make it very clear that you will almost **never** need strict three point perspective: it is not "useful" so much as it is a rather strange 3D aesthetic. But it _is_ a programming challenge, and no one's got a page up about this on the internet as I write this text, so that's certainly challenge enough to work out what the heck is up with this crazy projection and explain the code we need to achieve it.
 
+And if you got here from Hacker News, and your initial reaction is "this is nonsense, no one would implement things this way!": yes, that's the whole point of this article. We're digging into what happens if you _actually_ use the full perspective space. No one does that: it is a bad time. So if you find yourself slipping into that mindset, [give this a read](#also-a-note-on-what-this-article-is-not).
+
 ## Working in exponential space
 
 Let's have a look at the two point perspective, to get a feel for what we're dealing with:
