@@ -353,7 +353,7 @@ void drawRotatedCube(double n, Vec3 center, double angle) {
 
 ...things get very fun, very fast indeed!
 
-![image-20210604172348263](image-20210604172348263.png)
+![{F50C2277-E240-420A-ADBD-9CC788AF0B1F}.png]({F50C2277-E240-420A-ADBD-9CC788AF0B1F}.png)
 
 And remember: in world coordinates, none of these edges are actually curved, they're all straight lines with perfectly straight angles between them. Exponential space just completely ignores that.
 
