@@ -361,3 +361,4 @@ And remember: in world coordinates, none of these edges are actually curved, the
 
 It should be pretty obvious by now that strict three point perspective is _incredibly_ niche. The odds that you're going to use this for anything, at any point in the future, are basically zero. But it does teach us some interesting things, and maybe those are good inspiration for a future project you don't know you'll be working on yet!
 
+— [Pomax](https://twitter.com/TheRealPoamx)
