@@ -370,4 +370,4 @@ What people tend to forget is that when we draw two and three point perspective 
 That's the exact opposite of what we're doing in this article: we've explicitly set out to find out what happens if we use _the entire space available to us_. It's fun, and interesting, and we see some weird shit, and at the same time, if you're paying attention, you'll realize full well that this should _never_ be how you implement perspective projection.
 
 
-— [Pomax](https://twitter.com/TheRealPoamx)
+— [Pomax](https://twitter.com/TheRealPomax)
