@@ -298,7 +298,7 @@ So let's take the path of least resistance:
 
 ```java
 void curve(Vec3 p1, Vec3 p2) {
-  double steps = min(10, (int) p2.minus(p1).mag());
+  double steps = max(8.0, p2.minus(p1).mag()); // i.e. "8 or more steps"
   beginShape();
   for(double i=0; i<=1; i+=1.0/steps) {
     vertex(get(lerp(p1, p2, i)));
@@ -330,7 +330,28 @@ Which means that even a simple cube is going to look "nothing like a cube" most 
 
 ![image-20210604172040555](image-20210604172040555.png)
 
-But if we rotate that same cube just little over the three axes... well... things get very fun, very fast indeed!
+But if we rotate that same cube just little over the three axes... well... 
+
+```java
+void draw() {
+  Vec3 center = new Vec3(1,1,1);
+  drawRotatedCube(2, center, 0.15);
+}
+
+void drawRotatedCube(double n, Vec3 center, double angle) {
+  Vec3[] pts = getCubePoints(n);
+  
+  for(Vec3 p : pts) {
+    p.rotateX(center, angle);
+    p.rotateY(center, angle);
+    p.rotateZ(center, angle);
+  }
+  
+  drawCube(pts);
+}
+```
+
+...things get very fun, very fast indeed!
 
 ![image-20210604172348263](image-20210604172348263.png)
 
