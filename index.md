@@ -58,7 +58,9 @@ You may have spotted the pattern, where we're just moving by halving the remaini
 $$
 f(s) = \left ( \frac{1}{2} \right )^s = \frac{1}{2^s}
 $$
+
 When s=0, this gives us f(s)=1, and if s=∞ (ignoring that practically speaking this is impossible of course), we get f(s)=0. That's somewhat the opposite of what we actually want, namely have f(0) be 0 and f(∞) be 1, so we can force that:
+
 $$
 f(s) = 1 - \frac{1}{2^s}
 $$
@@ -260,7 +262,11 @@ Hahaha, no we haven't, we've actually been looking at an incredibly lucky edge c
 So far we've been looking at drawing straight, axis-aligned lines, and that might trick you into thinking that exponential space is pretty similar to Euclidean space, which would be a huge mistake. There are in fact only two kinds of lines that look straight in strict two or three point perspective: axis-aligned lines, and perpendiculars to axes. Everything else is, in fact, a curve, which we can see if we try to connect some points that "should" lie on a straight line, if this was Euclidean space. For instance, let's plot the line y=x/2 on the XY plane and see what happens:
 
 ```java
-void drawCurveIllustration() {  for(double i=0; i<20; i+=1.0/3.0) {    circle(get(i,i/2,0));  }}
+void drawCurveIllustration() {
+  for(double i=0; i<20; i+=1.0/3.0) {
+    circle(get(i,i/2,0));
+  }
+}
 ```
 
 We'd expect this to be a straight line, possibly pointing in an unexpected direction, but...
@@ -272,13 +278,27 @@ We'd expect this to be a straight line, possibly pointing in an unexpected direc
 So let's take the path of least resistance:
 
 ```java
-void curve(Vec3 p1, Vec3 p2) {  double steps = min(10, (int) p2.minus(p1).mag());  beginShape();  for(double i=0; i<=1; i+=1.0/steps) {    vertex(get(lerp(p1, p2, i)));  }  endShape();}
+void curve(Vec3 p1, Vec3 p2) {
+  double steps = min(10, (int) p2.minus(p1).mag());
+  beginShape();
+  for(double i=0; i<=1; i+=1.0/steps) {
+    vertex(get(lerp(p1, p2, i)));
+  }
+  endShape();
+}
 ```
 
 And now let's get an even better insight into that exponential behaviour:
 
 ```java
-void drawCurveIllustration() {  curve(new Vec3(0,0,0), new Vec3(20, 5,0)); // y = 0.25x  curve(new Vec3(0,0,0), new Vec3(20,10,0)); // y = 0.5x  curve(new Vec3(0,0,0), new Vec3(20,15,0)); // y = 0.75x  curve(new Vec3(0,0,0), new Vec3(20,20,0)); // y = x  curve(new Vec3(0,0,0), new Vec3(15,20,0)); // y = 1.33x  curve(new Vec3(0,0,0), new Vec3(10,20,0)); // y = 2x  curve(new Vec3(0,0,0), new Vec3( 5,20,0)); // y = 4x}
+void drawCurveIllustration() {
+  curve(new Vec3(0,0,0), new Vec3(20, 5,0)); // y = 0.25x
+  curve(new Vec3(0,0,0), new Vec3(20,10,0)); // y = 0.5x
+  curve(new Vec3(0,0,0), new Vec3(20,15,0)); // y = 0.75x
+  curve(new Vec3(0,0,0), new Vec3(20,20,0)); // y = x
+  curve(new Vec3(0,0,0), new Vec3(15,20,0)); // y = 1.33x
+  curve(new Vec3(0,0,0), new Vec3(10,20,0)); // y = 2x
+  curve(new Vec3(0,0,0), new Vec3( 5,20,0)); // y = 4x}
 ```
 
 This shows us the following curves:
@@ -300,4 +320,3 @@ And remember: in world coordinates, none of these edges are actually curved, the
 # Concluding remarks
 
 It should be pretty obvious by now that strict three point perspective is _incredibly_ niche. The odds that you're going to use this for anything, at any point in the future, are basically zero. But it does teach us some interesting things, and maybe those are good inspiration for a future project you don't know you'll be working on yet!
-
