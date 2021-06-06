@@ -369,5 +369,7 @@ What people tend to forget is that when we draw two and three point perspective 
 
 That's the exact opposite of what we're doing in this article: we've explicitly set out to find out what happens if we use _the entire space available to us_. It's fun, and interesting, and we see some weird shit, and at the same time, if you're paying attention, you'll realize full well that this should _never_ be how you implement perspective projection.
 
+Of course, if even after reading all that you're pretty sure you have constructive comments that would help improve this article, [file them on the issue tracker](https://github.com/Pomax/three-point-perspective/issues) and I'll be more than happy to engage with you in order to improve this article. 
+
 
 — [Pomax](https://twitter.com/TheRealPomax)
