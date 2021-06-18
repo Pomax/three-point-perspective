@@ -18,12 +18,19 @@ However, it is a neat programming challenge, and no one's got an explainer page 
 
 ## Table of Contents
 
-...to be generated...
-
+- [Working with perspective](#working-with-perspective)
+- [Perspective-mapping our plane coordinates](#perspective-mapping-our-plane-coordinates)
+- [Drawing a perspective point(#drawing-a-perspective-point)
+- [Using exponential mapping](#using-exponential-mapping)
+- [Using rational mapping instead](#using-rational-mapping-instead)
+- [Implementing strict two point perspective](#implementing-strict-two-point-perspective)
+- [Implementing strict three point perspective](#implementing-strict-three-point-perspective)
+- [Placing content "behind us"](#placing-content-behind-us)
+- [What happens if we had used exponential mapping?](#what-happens-if-we-had-used-exponential-mapping)
+- [Concluding remarks](#concluding-remarks)
 
 
 ## Working with perspective
-
 
 
 As three point perspective is a variation on two point perspective, let's first have a look at how two point perspective works, to get a feel for what we're dealing with:
@@ -136,7 +143,7 @@ And that's where things break down: while our exponential mapping might have see
 
 
 
-## Using rational mapping instead.
+## Using rational mapping instead
 
 If we look at our criteria again, that third criterium isn't actually strictly true. At some point negative coordinates are far away enough that they end up "behind" us, as viewer, and what happens where we can't see things doesn't strictly speaking actually matter to us. By relaxing that criterium a bit, we can find a different kind of function that won't run into the whole "straight lines turn into curves" problem we saw earlier.
 
@@ -341,7 +348,7 @@ This gives us the following 3D perspective "drawing":
 
 Looking pretty good! But: that only covers two point perspective. Let's up the point count, by making the elevation a third "fixed distance to infinity" axis as well. If you made it this far, things are about to look a lot more pointy!
 
-## Three point perspective
+## Implementing strict three point perspective
 
 Making our elevation a mapped axis gives us this delightful little world space, with every possible coordinate somewhere in the diamond bounded by Z, C, X, and Y:
 
