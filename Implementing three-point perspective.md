@@ -26,7 +26,7 @@ However, it is a neat programming challenge, and no one's got an explainer page 
 
 As three point perspective is a variation on two point perspective, let's first have a look at how two point perspective works, to get a feel for what we're dealing with:
 
-![image-20210606072040252](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210606072040252.png)
+![image-20210606072040252](image-20210606072040252.png)
 
 We have two vanishing points, labeled Z and X here, and some arbitrary "zero" point where we simply say "this is (0,0,0)" (using thee coordinates, because right now there's an implied Y coordinate, but we'll make it explicit soon enough).
 
@@ -34,7 +34,7 @@ When you're drawing on a piece of paper you don't really mark the zero point, bu
 
 So, let's say that the height from the ground to the horizon, at our zero point, is simply "one", then this will give us the following perspective:
 
-![image-20210615203701399](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210615203701399.png)
+![image-20210615203701399](image-20210615203701399.png)
 
 And this gives us (but more importantly, computers) all the information necessary to correctly map arbitrary coordinates to the screen, so we can draw pretty graphics using two point perspective. We just need to know how to implement the mapping.
 
@@ -44,15 +44,15 @@ There's one thing that you'll almost certainly have noticed already, but might n
 
 Instead of a "normal" grid with a "normal" coordinate system like this...
 
-![image-20210603163818568](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210603163818568.png)
+![image-20210603163818568](image-20210603163818568.png)
 
 ...we have something that's more like the following "grid", with an infinite number of values compressed to a fixed length interval:
 
-![image-20210615164226022](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210615164226022.png)
+![image-20210615164226022](image-20210615164226022.png)
 
 Although that's not quite the kind of thing we're dealing with in two and three point perspective, because if we look at the perspective images from the start of this section, we're working with a triangle rather than a rectangle, so things get even more interesting: we need to further compress things to get something that looks like this:
 
-![image-20210615164521049](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210615164521049.png)
+![image-20210615164521049](image-20210615164521049.png)
 
 While it might look like this triangle is the same as the above rectangular grid, just with the upper right corner moved inward so it forms a diagonal with the other two points, that's not actually the case. If you look at the upper left and lower right points, you'll see that our grid lines all converge. Calling those corners Z and X (to match our two point perspective labels), we see that all values x=..., z=∞ lie on the same point (namely, our point Z), which would not be the case if all we did was move our corner point in. In that case, all our originally parallel lines would still "end" at spread-out intervals along the diagonal.
 
@@ -64,7 +64,7 @@ Now, there are a lot of ways to achieve a mapping that has these properties, and
 
 In order to figure out what kind of mapping function we can use, let's look at how we draw points on paper. Say we want to draw the point x=0.5 and z=1, we would mark those points on their respective axes, then draw a line from Z to x=0.5, and from X to z=1, and where those two lines intersect is our point (0.5, 1), so let's put a picture to those words:
 
-![image-20210604085352991](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604085352991.png)
+![image-20210604085352991](image-20210604085352991.png)
 
 We see that as long as we know where to find x values along the X axis, and where to find z values along the Z axis, we can draw any point on the XZ plane. We could describe that in terms of pixels, but that's pretty tedious: instead we can describe where points along the axes are using [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation), so that the exercise of mapping coordinates becomes an exercise in "mapping the distance ratio" instead. For example, in our original, plain grid, an x value of 1 lies 1/8th away from 0 and 7/8th away from 8, and a value of 4 lies 1/2 away from 0 and 1/2 away from 8. 
 
@@ -82,7 +82,7 @@ So, let's naïvely do that!
 
 If we need a function that is 1 when the input is 0 and 0 when the input is infinity, then the intuitive (but as it will turn out, not very useful) choice would be to find out what mathematical function gives us something like the following mapping:
 
-![image-20210617114156522](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617114156522.png)
+![image-20210617114156522](image-20210617114156522.png)
 
 We don't actually care about the precise values, as long as:
 
@@ -96,7 +96,7 @@ f(s) = \frac{1}{a^s}
 $$
 Although if we plot that, we see the following:
 
-![image-20210617113408129](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617113408129.png)
+![image-20210617113408129](image-20210617113408129.png)
 
 Which seems completely wrong, but is actually almost exactly what we want: 
 
@@ -120,15 +120,15 @@ double map(s) {
 
 For instance, compare _a_=1.2 on the left, with _a_=2 on the right. Even at a low value like 2 we already get something that feels _pretty_ distorted:
 
-![image-20210617115204338](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617115204338.png) ![image-20210617115250535](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617115250535.png)
+![image-20210617115204338](image-20210617115204338.png) ![image-20210617115250535](image-20210617115250535.png)
 
 So as long as we use relatively low values for _a_ we should get something that looks good. However, we also want to make sure that straight lines stay straight. We know that, by definition, axis-aligned lines stay straight, but let's plot some more lines to see whether our mapping holds up. First let's try some parallel diagonals:
 
-![image-20210617115447556](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617115447556.png)
+![image-20210617115447556](image-20210617115447556.png)
 
 That looks to be holding up pretty well! But just to make doubly sure, let's also plot some other types of straight lines, like the lines x=z/4, x=z/2, z=x/2, and z=x/4. Those should still end up looking straight.
 
-![image-20210617115656227](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617115656227.png)
+![image-20210617115656227](image-20210617115656227.png)
 
 And that's where things break down: while our exponential mapping might have seemed well behaved, it turns out has the disastrous effect of turning most lines into curves.  So this was a decent first guess, but let's find a better mapping function, because using this one will cause [super weird things](#what-happens-if-we-had-used-exponential-mapping) to happen if we went ahead with it.
 
@@ -152,7 +152,7 @@ f(s) = 1 - \frac{1}{a \cdot s}
 $$
 If we plot this, we get plots that look like this:
 
-![image-20210617161229309](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617161229309.png)
+![image-20210617161229309](image-20210617161229309.png)
 
 And that's almost perfect, but it has one glaring problem: we want this to be the value 0 at s=0, not negative infinity, so we can offset our fraction a tiny bit to fix that:
 $$
@@ -160,19 +160,19 @@ f(s) = 1 - \frac{1}{1 + a \cdot s}
 $$
 now when _s_=0, _f(s)_ is 1 minus 1/1, which is the zero we want. Conversely, when _s_ "is" infinity, _f(s)_ is 1 minus 1/(1+infinity), which is 1 minus zero, which is 1. So we're in good shape. If we plot this update function, we see:
 
-![image-20210617161205832](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617161205832.png)
+![image-20210617161205832](image-20210617161205832.png)
 
 And this is where that factor _a_ comes into play: with _a_=1 we get a graph with an asymptote at _s_=-1, meaning that any coordinate equal to or less than -1 will behave drastically different from coordinates greater than -1. We can push that value back by using smaller values for _a_: if we want to have well-behaved coordinates up to some negative value `-k` then we can set `a` to `1/k`. For instance, if we want everything above -8 to be well behaved, we can set _a_=1/8 and get the following behavior, with an asymptote at -8:
 
-![image-20210617162300078](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617162300078.png)
+![image-20210617162300078](image-20210617162300078.png)
 
 So, what kind of grid do we get with this mapping function? Using `a=0.25`, we get the following "triangle grid":
 
-![image-20210615165734809](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210615165734809.png)
+![image-20210615165734809](image-20210615165734809.png)
 
 Which looks pretty good, but let's check those straight lines again:
 
-![image-20210617163150751](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617163150751.png) ![image-20210617163138020](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617163138020.png)
+![image-20210617163150751](image-20210617163150751.png) ![image-20210617163138020](image-20210617163138020.png)
 
 On the left we see what happens with diagonal straights: rather than all running parallel towards the horizon like in the exponential mapping case, they now each map to their own point on the diagonal. That's different, but the lines are still straight, so it's fine. Similarly, trying our straight lines x=z/4, x=z/2, z=x/2, and z=x/4 again still shows straight lines getting preserved.
 
@@ -194,7 +194,7 @@ double distanceToRatio(double s) {
 
 We can now define a function that turns a 3D world coordinate (with y=0, for now) into a 2D screen coordinate, by running through the procedure we looked at earlier: find the coordinate's distance along the X axis,  do the same for the Z axis, and our 2D projection will be the intersection of the line from Z to the point on the X axis, and from X to the point on the Z axis. Looking at the (x=0.5, z=1) case again:
 
-![image-20210604085352991](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604085352991.png)
+![image-20210604085352991](image-20210604085352992.png)
 
 So let's express that procedure in code:
 
@@ -259,7 +259,7 @@ void vertex(double x, double z) {
 
 Giving us the following graphic:
 
-![image-20210617164924137](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617164924137.png)
+![image-20210617164924137](image-20210617164924137.png)
 
 Of course, the whole point of two and three point perspective, is to draw _perspectives_ rather than flat projections, so let's extend our `get()` function so that it takes elevation into account. This requires a few values specified/computed up front as part of specifying our vanishing points, so we can use them in our elevation-updated `get()` function:
 
@@ -335,7 +335,7 @@ void drawSomeGeometry() {
 
 This gives us the following 3D perspective "drawing":
 
-![image-20210617165526949](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617165526949.png)
+![image-20210617165526949](image-20210617165526949.png)
 
 Looking pretty good! But: that only covers two point perspective. Let's up the point count, by making the elevation a third "fixed distance to infinity" axis as well. If you made it this far, things are about to look a lot more pointy!
 
@@ -343,13 +343,13 @@ Looking pretty good! But: that only covers two point perspective. Let's up the p
 
 Making our elevation a mapped axis gives us this delightful little world space, with every possible coordinate somewhere in the diamond bounded by Z, C, X, and Y:
 
-![image-20210615164149548](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210615164149548.png)
+![image-20210615164149548](image-20210615164149548.png)
 
 We now have three vanishing points that can never be reached (except by pixel rounding) and all verticals now converges at Y. So, let's write a `get3()` function for computing screen coordinates using this three point perspective. First off, let's sketch the procedure we'll need to implement for constructing 3D points in this three point perspective space:
 
 > ADD LABELS TO THE COORDINATES
 
-![image-20210617224206340](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617224206340.png)
+![image-20210617224206340](image-20210617224206340.png)
 
 We're basically doing the same thing we did for the two point perspective, but three times: first we find the point XY based on its X and Y axis coordinates, then we do the same for point YZ based on its Y and Z axis coordinates, and then lastly we find the intersection between the line from XY to Z, and the line from X to YZ. That intersection is the projection of our 3D point. In code:
 
@@ -371,7 +371,7 @@ Vec2 get3(double x, double y, double z) {
 
 So, what does this look like for the 1x7x2 beam we drew earlier using two point perspective?
 
-![image-20210617170318469](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617170318469.png)
+![image-20210617170318469](image-20210617170318469.png)
 
 That's not great. It's correct, but it's also weirdly stretched. As it turns out, the reason for this is that we're using the same scaling factor for all three dimensions, whereas we really want to use a separate scaling for our Y axis. So, let's make that happen:
 
@@ -404,17 +404,17 @@ Vec2 get3(double x, double y, double z) {
 
 This makes things look a little better, giving us a way to control exactly how much stretching we want, if this isn't quite to our liking yet:
 
-![image-20210617170824631](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617170824631.png)
+![image-20210617170824631](image-20210617170824631.png)
 
 ## Placing content "behind us" 
 
 So what actually happens when we try to draw things that cross that mapping asymptote? Let's shift our cube down a little until some of the coordinates are still in the nice part of our mapping function, with others in the differently-behaved part:
 
-![image-20210617224925029](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617224925029.png)
+![image-20210617224925029](image-20210617224925029.png)
 
 "Not looking too bad..."
 
-![image-20210617225006169](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617225006169.png)
+![image-20210617225006169](image-20210617225006169.png)
 
 
 
@@ -422,7 +422,7 @@ So what actually happens when we try to draw things that cross that mapping asym
 
 
 
-![image-20210617225032274](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617225032274.png)
+![image-20210617225032274](image-20210617225032274.png)
 
 
 
@@ -430,7 +430,7 @@ So what actually happens when we try to draw things that cross that mapping asym
 
 
 
-![image-20210617225113573](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210617225113573.png)
+![image-20210617225113573](image-20210617225113573.png)
 
 "Oh no, make it stop!"
 
@@ -493,15 +493,15 @@ void drawCurveIllustration() {
 
 Which gives us the following "curved straight lines":
 
-![image-20210604171151334](https://pomax.github.io/three-point-perspective/image-20210604171151334.png)
+![image-20210604171151334](image-20210604171151334.png)
 
 Beauty: this is going to go so wrong, so fast... let's see what happens if we draw a cube!
 
-![image-20210604172040555](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604172040555.png)
+![image-20210604172040555](image-20210604172040555.png)
 
 As we might have guess, nothing unusual there, all the lines are axis-aligned so we won't see the effect of exponential distortion kicking in. However: if we rotate that same cube even just little bit, things get very fun, very fast indeed!
 
-![image-20210604172348263](C:\Users\Mike\AppData\Roaming\Typora\typora-user-images\image-20210604172348263.png)
+![image-20210604172348263](image-20210604172348263.png)
 
 That's the stuff.
 
