@@ -18,7 +18,7 @@ However, it is a neat programming challenge, and no one's got an explainer page 
 
 - [Working with perspective](#working-with-perspective)
 - [Perspective-mapping our plane coordinates](#perspective-mapping-our-plane-coordinates)
-- [Drawing a perspective point(#drawing-a-perspective-point)
+- [Drawing a perspective point](#drawing-a-perspective-point)
 - [Using exponential mapping](#using-exponential-mapping)
 - [Using rational mapping instead](#using-rational-mapping-instead)
 - [Implementing strict two point perspective](#implementing-strict-two-point-perspective)
