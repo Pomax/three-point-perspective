@@ -7,4 +7,4 @@ h1:first-child { display: none }
 h1:nth-child(2) { font-size: 3em; }
 
 /* let's also give images a subtle border */
-img { border: 1px solid #999; }
+img { border: 1px solid #DDD; }
