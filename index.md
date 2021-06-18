@@ -76,9 +76,9 @@ In order to figure out what kind of mapping function we can use, let's look at h
 We see that as long as we know where to find x values along the X axis, and where to find z values along the Z axis, we can draw any point on the XZ plane. We could describe that in terms of pixels, but that's pretty tedious: instead we can describe where points along the axes are using [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation), so that the exercise of mapping coordinates becomes an exercise in "mapping the distance ratio" instead. For example, in our original, plain grid, an x value of 1 lies 1/8th away from 0 and 7/8th away from 8, and a value of 4 lies 1/2 away from 0 and 1/2 away from 8. 
 
 The standard linear interpolation function takes a minimum and maximum value, and some ratio value between zero and one:
-$$
-lerp(min, max, ratio) = min \cdot (1 - ratio) + max \cdot ratio
-$$
+
+![image-20210618092223194](image-20210618092223194.png)
+
 This has the property that if _ratio_ is 0, the result of _lerp_ is the minimum value, and when _ratio_ is 1, the result of _lerp_ is the maximum value. This means that to achieve a useful mapping, we need to find a function that turns our "value along an axes" (which can be anything from negative infinity to positive infinity) into a value that, at the very least, maps to 0 when the input is 0 and maps to 1 when the input is infinity. 
 
 So, let's naïvely do that!
@@ -98,9 +98,9 @@ We don't actually care about the precise values, as long as:
 3. _f(s)_ heads off towards negative infinity as _s_ becomes larger and larger in the negative direction
 
 And as it so happens, there is a function that does that, although it's standard form does the exact opposite: the inverse exponential function. Which looks like this:
-$$
-f(s) = \frac{1}{a^s}
-$$
+
+![image-20210618092302568](image-20210618092302568.png)
+
 Although if we plot that, we see the following:
 
 ![image-20210617113408129](image-20210617113408129.png)
@@ -112,9 +112,9 @@ Which seems completely wrong, but is actually almost exactly what we want:
 3. _f(s)_ heads off towards infinity as _s_ becomes larger and larger in the negative direction
 
 So to get to our original criteria, all we need to do is flip this function by subtracting it from one:
-$$
-f(s) = 1 - \frac{1}{a^s}
-$$
+
+![image-20210618092325632](image-20210618092325632.png)
+
 We can very easily implement this mapping...
 
 ```java
@@ -153,18 +153,16 @@ So, let's update the criteria list:
 
 Now a much better candidate would be the [multiplicative inverse](https://en.wikipedia.org/wiki/Multiplicative_inverse) function (with the same "one minus ..." trick to make sure it's a useful linear interpolation ratio):
 
+![image-20210618092336264](image-20210618092336264.png)
 
-$$
-f(s) = 1 - \frac{1}{a \cdot s}
-$$
 If we plot this, we get plots that look like this:
 
 ![image-20210617161229309](image-20210617161229309.png)
 
 And that's almost perfect, but it has one glaring problem: we want this to be the value 0 at s=0, not negative infinity, so we can offset our fraction a tiny bit to fix that:
-$$
-f(s) = 1 - \frac{1}{1 + a \cdot s}
-$$
+
+![image-20210618092346641](image-20210618092346641.png)
+
 now when _s_=0, _f(s)_ is 1 minus 1/1, which is the zero we want. Conversely, when _s_ "is" infinity, _f(s)_ is 1 minus 1/(1+infinity), which is 1 minus zero, which is 1. So we're in good shape. If we plot this update function, we see:
 
 ![image-20210617161205832](image-20210617161205832.png)
