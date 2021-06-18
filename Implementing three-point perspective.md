@@ -1,7 +1,5 @@
 # Implementing three-point perspective
 
-<style>img { border: 1px solid #444; }</style>
-
 This might seem an odd article: every tutorial on the internet teaches you that three point perspective is just the art term for "regular 3D", where you set up a camera, tweak its distance, FOV, and zoom, and you're done. The vanishing points that you use when using pen and paper correspond to where the X, Y, and Z axes intersect your clipping plane, and that's all she wrote... Except we can write more, because we can push three point perspective to its limit, and get some very funky results.
 
 The thing that makes it tricky is that in strict three point perspective, your vanishing points are _literally_ vanishing points: they don't represent intersections of axes that run to infinity and a clipping plane somewhere off in the distance relative to your camera, the vanishing points _are_ infinity. Which is a problem because that means we're not dealing with linear space, which means we can't use linear algebra to compute nice "3D world coordinates to 2D screen coordinates" using matrix operations. Which is a slight problem given that that's the fundamental approach that allows efficient 3D computer graphics on pretty much any modern hardware.
