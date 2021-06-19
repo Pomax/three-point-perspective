@@ -352,9 +352,7 @@ Making our elevation a mapped axis gives us this delightful little world space, 
 
 We now have three vanishing points that can never be reached (except by pixel rounding) and all verticals now converges at Y. So, let's write a `get3()` function for computing screen coordinates using this three point perspective. First off, let's sketch the procedure we'll need to implement for constructing 3D points in this three point perspective space:
 
-> ADD LABELS TO THE COORDINATES
-
-![image-20210617224206340](image-20210617224206340.png)
+![image-20210619090748999](image-20210619090748999.png)
 
 We're basically doing the same thing we did for the two point perspective, but three times: first we find the point XY based on its X and Y axis coordinates, then we do the same for point YZ based on its Y and Z axis coordinates, and then lastly we find the intersection between the line from XY to Z, and the line from X to YZ. That intersection is the projection of our 3D point. In code:
 
