@@ -4,4 +4,4 @@ Learn how to implementing the almost certainly useless strict three point perspe
 
 [Let's go!](https://pomax.github.io/three-point-perspective/)
 
--- [Pomax](http://twitter.com/TheRealPomax)
+-- [Pomax](https://mastodon.social/@TheRealPomax)

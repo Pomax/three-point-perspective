@@ -65,7 +65,7 @@ While it might look like this triangle is the same as the above rectangular grid
 
 What has happened here, instead, is that the _entire diagonal line_ represents (different versions of) the coordinate (∞,∞), whereas the two _points_ Z and X now represent entire "lines" of infinities. That's kind of crazy, this perspective thing seems so simple on paper!
 
-Now, there are a lot of ways to achieve a mapping that has these properties, and not all of them are actually all that great, so let's look at a naïve (and very wrong) way to achieve this mapping, as well as more informed (and much more useful, but still problematic at times) way to do the same. 
+Now, there are a lot of ways to achieve a mapping that has these properties, and not all of them are actually all that great, so let's look at a naïve (and very wrong) way to achieve this mapping, as well as more informed (and much more useful, but still problematic at times) way to do the same.
 
 ## Drawing a perspective point
 
@@ -73,13 +73,13 @@ In order to figure out what kind of mapping function we can use, let's look at h
 
 ![image-20210604085352991](image-20210604085352991.png)
 
-We see that as long as we know where to find x values along the X axis, and where to find z values along the Z axis, we can draw any point on the XZ plane. We could describe that in terms of pixels, but that's pretty tedious: instead we can describe where points along the axes are using [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation), so that the exercise of mapping coordinates becomes an exercise in "mapping the distance ratio" instead. For example, in our original, plain grid, an x value of 1 lies 1/8th away from 0 and 7/8th away from 8, and a value of 4 lies 1/2 away from 0 and 1/2 away from 8. 
+We see that as long as we know where to find x values along the X axis, and where to find z values along the Z axis, we can draw any point on the XZ plane. We could describe that in terms of pixels, but that's pretty tedious: instead we can describe where points along the axes are using [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation), so that the exercise of mapping coordinates becomes an exercise in "mapping the distance ratio" instead. For example, in our original, plain grid, an x value of 1 lies 1/8th away from 0 and 7/8th away from 8, and a value of 4 lies 1/2 away from 0 and 1/2 away from 8.
 
 The standard linear interpolation function takes a minimum and maximum value, and some ratio value between zero and one:
 
 ![image-20210618092223194](image-20210618092223194.png)
 
-This has the property that if _ratio_ is 0, the result of _lerp_ is the minimum value, and when _ratio_ is 1, the result of _lerp_ is the maximum value. This means that to achieve a useful mapping, we need to find a function that turns our "value along an axes" (which can be anything from negative infinity to positive infinity) into a value that, at the very least, maps to 0 when the input is 0 and maps to 1 when the input is infinity. 
+This has the property that if _ratio_ is 0, the result of _lerp_ is the minimum value, and when _ratio_ is 1, the result of _lerp_ is the maximum value. This means that to achieve a useful mapping, we need to find a function that turns our "value along an axes" (which can be anything from negative infinity to positive infinity) into a value that, at the very least, maps to 0 when the input is 0 and maps to 1 when the input is infinity.
 
 So, let's naïvely do that!
 
@@ -105,7 +105,7 @@ Although if we plot that, we see the following:
 
 ![image-20210617113408129](image-20210617113408129.png)
 
-Which seems completely wrong, but is actually almost exactly what we want: 
+Which seems completely wrong, but is actually almost exactly what we want:
 
 1. _f(0)_ gives us 1,
 2. _f(s)_ gets closer and closer to 0 as _s_ becomes larger and larger in the positive direction,
@@ -212,7 +212,7 @@ Vec2 get(double x, double z) {
   Vec2 px = lerp(C, X, distanceToRatio(x));
   Vec2 pz = lerp(C, Z, distanceToRatio(z));
   return lli(X, pz, Z, px);
-} 
+}
 ```
 
 In this code, **lerp** is the [linear interpolation function](https://en.wikipedia.org/wiki/Linear_interpolation) (for vectors rather than scalars in this case), and **lli** computes a "**l**ine/**l**ine **i**ntersection", with the following implementation:
@@ -248,13 +248,13 @@ void drawSomeGeometry() {
     vertex(1,3);
     vertex(0,3);
     endShape(CLOSE);
-    
+
     beginShape();
     vertex(2,2);
     vertex(2,3);
     vertex(3,3);
     vertex(3,2);
-    endShape(CLOSE);   
+    endShape(CLOSE);
 }
 
 void vertex(double x, double z) {
@@ -275,7 +275,7 @@ double yScale = 5.0;                  // This determines what height is drawn as
 double yFactor = dyC / yScale;        // By how much we need to scale world.y to get screen.y?
 ```
 
-We can set all of these at the same time we set the X, Z, and C screen coordinates, meaning we'll have all of this already available by the time we start drawing things. 
+We can set all of these at the same time we set the X, Z, and C screen coordinates, meaning we'll have all of this already available by the time we start drawing things.
 
 We then update our `get()` function to take elevation into account:
 
@@ -289,28 +289,28 @@ Vec2 get(double x, double y, double z) {
   Vec2 pz = lerp(C, Z, stepToDistanceRatio(z));
   Vec2 ground = lli(X, pz, Z, px);
   if (y==0) return ground;
-  
+
   // If we have an elevation, it will be a vertical offset from the ground,
   // with the elevation scaled based on how close our ground plane point is
   // to the horizon (X--Z), as well as how close it is our vanishing points.
 
   // So: are we to the left, or to the right, of our center line?
   boolean inZ = (ground.x < C.x);
-    
+
   // Determine our first height scaling factor, based on how close
   // we are to our vanishing points (Z if "in Z", X otherwise).
   double rx = inZ ? (ground.x - Z.x) / (C.x - Z.x) : (X.x - ground.x) / (X.x - C.x);
-  
+
   // Then, determine the second height scaling factor based on how
   // close our coordinate on the ground plane is to the horizon.
   Vec2 onAxis = lli(inZ ? Z : X, C, ground, ground.plus(0, 10));
   double ry = (ground.y - HC.y) / (onAxis.y - HC.y);
-    
+
   // Our final screen-height is the world height, times the yFactor
   // (i.e. the elevation this coordinate would have if the x/z
   // coordinates were zero), times our two scaling factors.
   return ground.minus(0, rx * ry * y * yFactor);
-} 
+}
 ```
 
 And now we can do some proper two point perspective drawing:
@@ -319,14 +319,14 @@ And now we can do some proper two point perspective drawing:
 void drawSomeGeometry() {
   // let's define a 1x7x2 box
   Vec2[] p = {
-    get(0, 0, 0), 
-    get(1, 0, 0), 
-    get(1, 0, 2), 
-    get(0, 0, 2), 
-    get(0, 7, 0), 
-    get(1, 7, 0), 
-    get(1, 7, 2), 
-    get(0, 7, 2), 
+    get(0, 0, 0),
+    get(1, 0, 0),
+    get(1, 0, 2),
+    get(0, 0, 2),
+    get(0, 7, 0),
+    get(1, 7, 0),
+    get(1, 7, 2),
+    get(0, 7, 2),
   };
 
   // and then let's draw its wireframe
@@ -359,7 +359,7 @@ We're basically doing the same thing we did for the two point perspective, but t
 ```java
 Vec2 get3(double x, double y, double z) {
   if (x==0 && y==0 && z==0) return C;
-    
+
   Vec2 px = lerp(C, X, stepToDistanceRatio(x));
   Vec2 pz = lerp(C, Z, stepToDistanceRatio(z));
 
@@ -392,7 +392,7 @@ double distanceToRatio(double s, boolean forY) {
 
 Vec2 get3(double x, double y, double z) {
   if (x==0 && y==0 && z==0) return C;
-    
+
   Vec2 px = lerp(C, X, stepToDistanceRatio(x));
   Vec2 pz = lerp(C, Z, stepToDistanceRatio(z));
 
@@ -409,7 +409,7 @@ This makes things look a little better, giving us a way to control exactly how m
 
 ![image-20210617170824631](image-20210617170824631.png)
 
-## Placing content "behind us" 
+## Placing content "behind us"
 
 So what actually happens when we try to draw things that cross that mapping asymptote? Let's shift our cube down a little until some of the coordinates are still in the nice part of our mapping function, with others in the differently-behaved part:
 
@@ -508,7 +508,7 @@ As we might have guess, nothing unusual there, all the lines are axis-aligned so
 
 That's the stuff.
 
-And remember: in world coordinates, none of these edges are actually curved, they're all straight lines with perfectly straight angles between them. It's just the exponential mapping completely ignoring that. It's hilarious, and animating it is like watching a drunk computer try to do maths and getting it horribly wrong. 
+And remember: in world coordinates, none of these edges are actually curved, they're all straight lines with perfectly straight angles between them. It's just the exponential mapping completely ignoring that. It's hilarious, and animating it is like watching a drunk computer try to do maths and getting it horribly wrong.
 
 ## Concluding remarks
 
@@ -518,4 +518,4 @@ However, there's no doubt still incompletions, or oddly phrased parts, so if you
 
 Thanks for reading, and have fun coding!
 
-— [Pomax](https://twitter.com/TheRealPomax)
+— [Pomax](https://mastodon.social/@TheRealPomax)
